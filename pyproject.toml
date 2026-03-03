@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "helmscope"
+version = "0.1.0"
+description = "Helm Release Auditor — audit Helm releases running in a Kubernetes cluster"
+authors = [{ name = "Your Name", email = "you@example.com" }]
+license = "MIT"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "click>=8.1",
+    "rich>=13.0",
+    "kubernetes>=28.1",
+    "pydantic>=2.0",
+    "jinja2>=3.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4",
+    "pytest-mock>=3.12",
+    "ruff>=0.3",
+    "mypy>=1.8",
+    "pip-tools>=7.4",
+]
+
+[project.scripts]
+helmscope = "helmscope.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["helmscope*"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 88
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
