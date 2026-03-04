@@ -26,6 +26,7 @@ dev = [
     "ruff>=0.3",
     "mypy>=1.8",
     "pip-tools>=7.4",
+    "types-PyYAML>=6.0",
 ]
 
 [project.scripts]

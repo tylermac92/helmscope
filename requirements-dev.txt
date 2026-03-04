@@ -85,6 +85,8 @@ six==1.17.0
     # via
     #   kubernetes
     #   python-dateutil
+types-pyyaml==6.0.12.20250915
+    # via helmscope (pyproject.toml)
 typing-extensions==4.15.0
     # via
     #   mypy

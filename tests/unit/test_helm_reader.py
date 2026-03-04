@@ -180,3 +180,45 @@ class TestParseManifest:
 
     def test_empty_string_returns_empty_list(self) -> None:
         assert parse_manifest("") == []
+
+    def test_mixed_resource_types(self) -> None:
+        manifest = (
+            "apiVersion: apps/v1\nkind: Deployment\n"
+            "metadata:\n  name: app\n  namespace: default\n"
+            "---\n"
+            "apiVersion: v1\nkind: Service\n"
+            "metadata:\n  name: svc\n  namespace: default\n"
+            "---\n"
+            "apiVersion: policy/v1\nkind: PodDisruptionBudget\n"
+            "metadata:\n  name: pdb\n  namespace: default\n"
+            "---\n"
+            "apiVersion: v1\nkind: ConfigMap\n"
+            "metadata:\n  name: cfg\n  namespace: default\n"
+        )
+        result = parse_manifest(manifest)
+        assert len(result) == 4
+        kinds = [r["kind"] for r in result]
+        assert "Deployment" in kinds
+        assert "Service" in kinds
+        assert "PodDisruptionBudget" in kinds
+        assert "ConfigMap" in kinds
+
+    def test_metadata_fields_passed_through(self) -> None:
+        manifest = (
+            "apiVersion: apps/v1\n"
+            "kind: Deployment\n"
+            "metadata:\n"
+            "  name: my-app\n"
+            "  namespace: production\n"
+        )
+        result = parse_manifest(manifest)
+        assert len(result) == 1
+        meta = result[0].get("metadata")
+        assert isinstance(meta, dict)
+        assert meta["name"] == "my-app"
+        assert meta["namespace"] == "production"
+
+    def test_document_with_only_separator_skipped(self) -> None:
+        manifest = "---\napiVersion: v1\nkind: Service\nmetadata:\n  name: svc\n---\n"
+        result = parse_manifest(manifest)
+        assert len(result) == 1

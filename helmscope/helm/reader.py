@@ -8,6 +8,7 @@ import json
 import logging
 from datetime import UTC, datetime
 
+import yaml
 from kubernetes.client import CoreV1Api  # type: ignore[import-untyped]
 from kubernetes.client.exceptions import ApiException  # type: ignore[import-untyped]
 from pydantic import ValidationError
@@ -189,12 +190,6 @@ def parse_manifest(manifest_str: str) -> list[dict[str, object]]:
     Returns a list of dicts, one per Kubernetes resource.
     Skips empty documents and resources missing apiVersion or kind.
     """
-    try:
-        import yaml  # type: ignore[import-untyped]
-    except ImportError:
-        logger.error("PyYAML is required for manifest parsing.")
-        return []
-
     resources: list[dict[str, object]] = []
     for doc in yaml.safe_load_all(manifest_str):
         if not doc:
